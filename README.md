@@ -32,13 +32,13 @@ Sentiment-Analysis/
 │   ├── evaluate.py      # Metrics, confusion matrix, ROC curve
 │   └── predict.py       # Inference on new reviews
 │
-├── data/                # Place your CSV here (not tracked by Git)
+├── data/                # ⚠️ Place your CSV here (not tracked by Git)
 │   └── .gitkeep
 │
 ├── models/              # Saved model artefacts (not tracked by Git)
 │   └── .gitkeep
 │
-├── outputs/             # Plots, charts, result JSONs (not tracked by Git)
+├── outputs/             # Plots & results (not tracked by Git)
 │   └── .gitkeep
 │
 ├── requirements.txt
@@ -89,8 +89,8 @@ venv\Scripts\activate           # Windows
 pip install -r requirements.txt
 ```
 
-### 4. Add the dataset
-Download the CSV from [Kaggle](https://www.kaggle.com/datasets/jiashenliu/515k-hotel-reviews-data-in-europe) and place it at:
+### 4. Download the dataset
+Download `Hotel_Reviews.csv` from [Kaggle](https://www.kaggle.com/datasets/jiashenliu/515k-hotel-reviews-data-in-europe) and place it at:
 ```
 data/Hotel_Reviews.csv
 ```
@@ -103,14 +103,20 @@ data/Hotel_Reviews.csv
 ```bash
 jupyter notebook notebooks/hotel_sentiment_analysis.ipynb
 ```
-Run all cells top-to-bottom. The notebook covers EDA → preprocessing → modelling → evaluation → inference.
+Run all cells top-to-bottom. The notebook covers:
+1. EDA & visualisations
+2. Text preprocessing & label engineering
+3. TF-IDF + meta-feature engineering
+4. Classical ML models (LR, SVM, RF, XGBoost)
+5. Bi-LSTM deep learning model
+6. Inference on new review text
 
 ### Option B — CLI Scripts
 
 **Train a model:**
 ```bash
-python src/train.py --data data/hotel_reviews.csv --model logreg
-python src/train.py --data data/hotel_reviews.csv --model all   # train all models
+python src/train.py --data data/Hotel_Reviews.csv --model logreg
+python src/train.py --data data/Hotel_Reviews.csv --model all   # train all models
 ```
 
 **Predict on new text:**
@@ -128,13 +134,14 @@ python src/predict.py --csv data/new_reviews.csv --out outputs/predictions.csv
 ## 🧠 Models
 
 | Model | Type | Library |
-|-------|------|---------|
+|-------|------|---------| 
 | Logistic Regression | Classical ML | scikit-learn |
 | Linear SVM | Classical ML | scikit-learn |
-| Random Forest | Ensemble | scikit-learn |
+| Random Forest *(speed-opt)* | Ensemble | scikit-learn |
 | XGBoost | Gradient Boosting | xgboost |
 | Bi-LSTM | Deep Learning | TensorFlow/Keras |
-| BERT | Transformer | HuggingFace Transformers |
+
+> **Random Forest** is configured with `n_estimators=100`, `max_depth=20`, `max_samples=0.3` so it trains in **under 1 minute** on 500k rows while staying within ~1% of full-forest accuracy.
 
 ---
 
@@ -159,7 +166,6 @@ Feature Engineering
   ▼
 Model Training & Evaluation
   ├─ Train/test split (80/20, stratified)
-  ├─ 5-fold cross-validation
   └─ Metrics: Accuracy, F1, Precision, Recall, AUC-ROC
   │
   ▼
@@ -182,7 +188,7 @@ Outputs
 | Random Forest *(speed-opt)* | ~0.91 | ~0.91 | ~0.96 |
 | Bi-LSTM | ~0.94 | ~0.94 | ~0.98 |
 
-> *Random Forest uses 100 trees / 30% row sub-sample / max depth 20 for <1 min training. Exact results depend on dataset version and hyperparameters.*
+> *Exact results depend on dataset version and hyperparameters.*
 
 ---
 

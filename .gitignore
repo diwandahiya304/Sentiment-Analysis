@@ -19,7 +19,7 @@ env/
 .ipynb_checkpoints/
 */.ipynb_checkpoints/
 
-# ── Data  (large files — upload separately or use Git LFS) ───────────
+# ── Data  (large files — download separately, not tracked by Git) ─────
 data/*.csv
 data/*.xlsx
 data/*.json
@@ -36,10 +36,11 @@ models/*.bin
 models/*.joblib
 !models/.gitkeep
 
-# ── Outputs ───────────────────────────────────────────────────────────
+# ── Outputs (generated artefacts) ────────────────────────────────────
 outputs/*.png
 outputs/*.pdf
 outputs/*.html
+outputs/*.csv
 notebooks/outputs/
 notebooks/models/
 !outputs/.gitkeep
@@ -56,9 +57,3 @@ Thumbs.db
 # ── Env variables ─────────────────────────────────────────────────────
 .env
 *.env
-
-# ── Dev / temp artefacts ──────────────────────────────────────────────
-patch_notebook.py
-fix_rf_notebook.py
-tmp_check.txt
-"{src,notebooks,data,models,outputs}"/
