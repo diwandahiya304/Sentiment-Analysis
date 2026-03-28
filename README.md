@@ -1,44 +1,46 @@
-# 🏨 Hotel Review Sentiment Analysis
+# 🎭 Sentiment Analysis — NLP Pipeline
 
-> **Binary sentiment classification of 515K+ European hotel reviews using Classical ML, Deep Learning (LSTM), and Transformers (BERT).**
+> **Binary sentiment classification of 20,000+ customer reviews using spaCy, TF-IDF, and Naive Bayes.**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
-[![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.4-orange?logo=scikitlearn)](https://scikit-learn.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.16-FF6F00?logo=tensorflow)](https://www.tensorflow.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.4-orange?logo=scikitlearn)](https://scikit-learn.org/)
+[![spaCy](https://img.shields.io/badge/spaCy-3.x-09A3D5?logo=spacy)](https://spacy.io/)
 
 ---
 
 ## 📌 Project Overview
 
-This project performs **sentiment analysis** on the [Hotel Reviews dataset](https://www.kaggle.com/datasets/jiashenliu/515k-hotel-reviews-data-in-europe) — 515,000+ reviews scraped from Booking.com. Each review contains a separate positive and negative comment along with a numeric reviewer score (0–10).
+End-to-end NLP sentiment analysis pipeline on the **IMDB Movie Reviews** dataset (50,000 reviews) from Kaggle. Reviews are classified as **Positive** or **Negative** using classical NLP techniques.
 
-**Goal:** Predict whether a hotel review is **Positive** (score ≥ 7) or **Negative** (score < 7).
+**Dataset:** [IMDB Dataset of 50K Movie Reviews](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)  
+_(Only 20,000 reviews are used for efficiency — easily configurable.)_
 
 ---
 
 ## 📂 Repository Structure
 
 ```
-Sentiment-Analysis/
+sentiment-analysis/
 │
-├── notebooks/
-│   └── hotel_sentiment_analysis.ipynb   # Main end-to-end notebook
+├── data/
+│   └── IMDB Dataset.csv          # ⚠️ Download from Kaggle (not tracked by Git)
 │
 ├── src/
-│   ├── preprocess.py    # Text cleaning & label engineering
-│   ├── features.py      # TF-IDF, BoW, meta-feature extraction
-│   ├── train.py         # CLI training script (all models)
-│   ├── evaluate.py      # Metrics, confusion matrix, ROC curve
-│   └── predict.py       # Inference on new reviews
+│   ├── preprocess.py             # spaCy text cleaning pipeline
+│   ├── features.py               # TF-IDF feature engineering
+│   ├── train.py                  # Naive Bayes model training
+│   └── evaluate.py               # Metrics & confusion matrix
 │
-├── data/                # ⚠️ Place your CSV here (not tracked by Git)
-│   └── .gitkeep
+├── outputs/
+│   ├── confusion_matrix.png
+│   ├── top_features.png
+│   └── results.csv
 │
-├── models/              # Saved model artefacts (not tracked by Git)
-│   └── .gitkeep
+├── models/
+│   └── nb_model.joblib           # Saved Naive Bayes model
 │
-├── outputs/             # Plots & results (not tracked by Git)
-│   └── .gitkeep
+├── notebooks/
+│   └── sentiment_analysis.ipynb  # Full end-to-end notebook
 │
 ├── requirements.txt
 ├── .gitignore
@@ -47,24 +49,15 @@ Sentiment-Analysis/
 
 ---
 
-## 📊 Dataset Columns
+## 📊 Dataset
 
-| Column | Description |
-|--------|-------------|
-| `Hotel_Name` | Hotel name |
-| `Hotel_Address` | Full address |
-| `Average_Score` | Hotel's overall Booking.com score |
-| `Reviewer_Nationality` | Reviewer's country |
-| `Negative_Review` | Free-text negative comment |
-| `Positive_Review` | Free-text positive comment |
-| `Review_Total_Negative_Word_Counts` | Word count of negative review |
-| `Review_Total_Positive_Word_Counts` | Word count of positive review |
-| `Reviewer_Score` | ⭐ Numeric score 0–10 (target variable basis) |
-| `Total_Number_of_Reviews` | Total reviews for the hotel |
-| `Total_Number_of_Reviews_Reviewer_Has_Given` | Reviewer experience |
-| `Tags` | Traveller type, room type, trip duration |
-| `days_since_review` | Days since the review was posted |
-| `lat`, `lng` | Hotel geographic coordinates |
+| Column     | Description                          |
+|------------|--------------------------------------|
+| `review`   | Raw movie review text                |
+| `sentiment`| Label: `positive` or `negative`      |
+
+- **Total rows:** 50,000 (20,000 used)
+- **Class balance:** 50% positive / 50% negative
 
 ---
 
@@ -72,8 +65,8 @@ Sentiment-Analysis/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/diwandahiya304/Sentiment-Analysis.git
-cd Sentiment-Analysis
+git clone https://github.com/<your-username>/sentiment-analysis.git
+cd sentiment-analysis
 ```
 
 ### 2. Create a virtual environment
@@ -86,132 +79,95 @@ venv\Scripts\activate           # Windows
 ### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 ```
 
 ### 4. Download the dataset
-Download `Hotel_Reviews.csv` from [Kaggle](https://www.kaggle.com/datasets/jiashenliu/515k-hotel-reviews-data-in-europe) and place it at:
+Download `IMDB Dataset.csv` from [Kaggle](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) and place it at:
 ```
-data/Hotel_Reviews.csv
+data/IMDB Dataset.csv
 ```
 
 ---
 
 ## 🚀 Usage
 
-### Option A — Jupyter Notebook (recommended)
+### Option A — Jupyter Notebook *(recommended)*
 ```bash
-jupyter notebook notebooks/hotel_sentiment_analysis.ipynb
-```
-Run all cells top-to-bottom. The notebook covers:
-1. EDA & visualisations
-2. Text preprocessing & label engineering
-3. TF-IDF + meta-feature engineering
-4. Classical ML models (LR, SVM, RF, XGBoost)
-5. Bi-LSTM deep learning model
-6. Inference on new review text
-
-### Option B — CLI Scripts
-
-**Train a model:**
-```bash
-python src/train.py --data data/Hotel_Reviews.csv --model logreg
-python src/train.py --data data/Hotel_Reviews.csv --model all   # train all models
+jupyter notebook notebooks/sentiment_analysis.ipynb
 ```
 
-**Predict on new text:**
+### Option B — Run scripts individually
 ```bash
-python src/predict.py --text "The room was spotless and the staff were amazing!"
+# Step 1: Preprocess
+python src/preprocess.py
+
+# Step 2: Train
+python src/train.py
+
+# Step 3: Evaluate
+python src/evaluate.py
 ```
 
-**Batch prediction on a CSV:**
+### Option C — Predict on new text
 ```bash
-python src/predict.py --csv data/new_reviews.csv --out outputs/predictions.csv
+python src/train.py --predict "This movie was absolutely fantastic!"
 ```
 
 ---
 
-## 🧠 Models
-
-| Model | Type | Library |
-|-------|------|---------| 
-| Logistic Regression | Classical ML | scikit-learn |
-| Linear SVM | Classical ML | scikit-learn |
-| Random Forest *(speed-opt)* | Ensemble | scikit-learn |
-| XGBoost | Gradient Boosting | xgboost |
-| Bi-LSTM | Deep Learning | TensorFlow/Keras |
-
-> **Random Forest** is configured with `n_estimators=100`, `max_depth=20`, `max_samples=0.3` so it trains in **under 1 minute** on 500k rows while staying within ~1% of full-forest accuracy.
-
----
-
-## 📈 Pipeline
+## 🧠 Pipeline
 
 ```
-Raw CSV
+Raw CSV (IMDB Dataset.csv)
   │
   ▼
-Preprocessing
-  ├─ Combine Negative_Review + Positive_Review
-  ├─ Remove placeholders ("No Negative", etc.)
-  ├─ Lowercase → strip HTML/URLs → remove punctuation
-  ├─ Tokenise → remove stopwords (keep negations) → lemmatise
-  └─ Label: score < 7 → Negative (0), score ≥ 7 → Positive (1)
+src/preprocess.py  ──  spaCy pipeline
+  ├─ Lowercase
+  ├─ Remove HTML tags & URLs
+  ├─ Tokenise with spaCy (en_core_web_sm)
+  ├─ Remove stopwords & punctuation
+  └─ Lemmatise tokens
   │
   ▼
-Feature Engineering
-  ├─ TF-IDF (unigrams + bigrams, 50k vocab)
-  └─ Meta-features: word counts, neg_ratio, avg_score, reviewer exp, geo coords
+src/features.py  ──  TF-IDF Vectorization
+  ├─ Unigrams + Bigrams
+  ├─ max_features = 20,000
+  └─ sublinear_tf = True
   │
   ▼
-Model Training & Evaluation
-  ├─ Train/test split (80/20, stratified)
-  └─ Metrics: Accuracy, F1, Precision, Recall, AUC-ROC
+src/train.py  ──  Naive Bayes Classifier
+  ├─ MultinomialNB (scikit-learn)
+  ├─ 80/20 stratified train–test split
+  └─ Save model → models/nb_model.joblib
   │
   ▼
-Outputs
-  ├─ outputs/model_comparison.png
-  ├─ outputs/confusion_matrix_*.png
-  ├─ outputs/roc_curves.png
-  ├─ outputs/wordclouds.png
-  └─ models/best_model.joblib
+src/evaluate.py  ──  Metrics
+  ├─ Accuracy, F1, Precision, Recall
+  ├─ Confusion matrix → outputs/
+  └─ Top TF-IDF features → outputs/
 ```
 
 ---
 
-## 📉 Sample Results
+## 📈 Results
 
-| Model | Accuracy | F1 | AUC |
-|-------|----------|----|-----|
-| Logistic Regression | ~0.93 | ~0.93 | ~0.97 |
-| Linear SVM | ~0.93 | ~0.93 | — |
-| Random Forest *(speed-opt)* | ~0.91 | ~0.91 | ~0.96 |
-| Bi-LSTM | ~0.94 | ~0.94 | ~0.98 |
-
-> *Exact results depend on dataset version and hyperparameters.*
+| Metric    | Score  |
+|-----------|--------|
+| Accuracy  | ~0.86  |
+| F1 Score  | ~0.86  |
+| Precision | ~0.86  |
+| Recall    | ~0.86  |
 
 ---
 
-## 📁 Outputs
+## 🔑 Key Features
 
-After running the notebook, the `outputs/` directory contains:
-
-- `score_distributions.png` — reviewer & hotel score histograms
-- `label_distribution.png` — class balance chart
-- `top_nationalities.png` — reviewer nationality bar chart
-- `positive_review_wordcloud.png` — word cloud for positive reviews
-- `negative_review_wordcloud.png` — word cloud for negative reviews
-- `top_words_by_class.png` — top 20 words per class
-- `confusion_matrix_*.png` — per-model confusion matrices
-- `roc_curves.png` — all model ROC curves
-- `model_comparison.png` — metric bar chart
-- `model_results.csv` — tabular results
-- `hotel_heatmap.html` — interactive geo map (requires folium)
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome. For major changes, please open an issue first.
+- **spaCy NLP pipeline** — efficient tokenization, lemmatization, and stopword removal on 20,000+ reviews
+- **Advanced text cleaning** — strips HTML tags, URLs, special characters to reduce noise
+- **TF-IDF vectorization** — extracts contextual unigram + bigram features (20k vocab)
+- **80/20 stratified split** — ensures balanced class distribution in train and test sets
+- **Naive Bayes classifier** — fast, interpretable, and effective for text classification
 
 ---
 

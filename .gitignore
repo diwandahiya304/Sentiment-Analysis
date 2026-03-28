@@ -1,59 +1,39 @@
-# ── Python ────────────────────────────────────────────────────────────
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-
-# ── Virtual Environments ──────────────────────────────────────────────
-venv/
-env/
-.venv/
-.env/
-
-# ── Jupyter ───────────────────────────────────────────────────────────
-.ipynb_checkpoints/
-*/.ipynb_checkpoints/
-
-# ── Data  (large files — download separately, not tracked by Git) ─────
+# Data (too large for Git)
 data/*.csv
-data/*.xlsx
 data/*.json
-data/*.parquet
-data/*.zip
-!data/.gitkeep
+data/*.tsv
 
-# ── Trained Models ────────────────────────────────────────────────────
-models/*.pkl
-models/*.h5
-models/*.keras
-models/*.pt
-models/*.bin
+# Model artefacts
 models/*.joblib
-!models/.gitkeep
+models/*.pkl
 
-# ── Outputs (generated artefacts) ────────────────────────────────────
+# Outputs (regenerated on each run)
 outputs/*.png
-outputs/*.pdf
 outputs/*.html
 outputs/*.csv
-notebooks/outputs/
-notebooks/models/
-!outputs/.gitkeep
 
-# ── IDE ───────────────────────────────────────────────────────────────
-.vscode/
-.idea/
-*.swp
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
 
-# ── OS ────────────────────────────────────────────────────────────────
+# Environments
+venv/
+.env
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# OS
 .DS_Store
 Thumbs.db
 
-# ── Env variables ─────────────────────────────────────────────────────
-.env
-*.env
+# Keep folder structure
+!data/.gitkeep
+!models/.gitkeep
+!outputs/.gitkeep
