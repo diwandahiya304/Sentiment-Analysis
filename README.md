@@ -2,7 +2,7 @@
 
 > **Binary sentiment classification of 20,000+ customer reviews using spaCy, TF-IDF, and Naive Bayes.**
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.4-orange?logo=scikitlearn)](https://scikit-learn.org/)
 [![spaCy](https://img.shields.io/badge/spaCy-3.x-09A3D5?logo=spacy)](https://spacy.io/)
 
@@ -20,7 +20,7 @@ _(Only 20,000 reviews are used for efficiency — easily configurable.)_
 ## 📂 Repository Structure
 
 ```
-sentiment-analysis/
+Sentiment-Analysis/
 │
 ├── data/
 │   └── IMDB Dataset.csv          # ⚠️ Download from Kaggle (not tracked by Git)
@@ -28,16 +28,18 @@ sentiment-analysis/
 ├── src/
 │   ├── preprocess.py             # spaCy text cleaning pipeline
 │   ├── features.py               # TF-IDF feature engineering
-│   ├── train.py                  # Naive Bayes model training
-│   └── evaluate.py               # Metrics & confusion matrix
+│   ├── train.py                  # Naive Bayes model training + CLI inference
+│   └── evaluate.py               # Metrics, confusion matrix & top features plot
 │
 ├── outputs/
-│   ├── confusion_matrix.png
-│   ├── top_features.png
-│   └── results.csv
+│   ├── confusion_matrix.png      # Confusion matrix heatmap
+│   ├── top_features.png          # Most informative TF-IDF words per class
+│   ├── inference_demo.png        # Live inference screenshot
+│   └── results.csv               # Accuracy, F1, Precision, Recall
 │
 ├── models/
-│   └── nb_model.joblib           # Saved Naive Bayes model
+│   ├── nb_model.joblib           # Saved Naive Bayes model
+│   └── tfidf_vectorizer.joblib   # Saved TF-IDF vectorizer
 │
 ├── notebooks/
 │   └── sentiment_analysis.ipynb  # Full end-to-end notebook
@@ -51,10 +53,10 @@ sentiment-analysis/
 
 ## 📊 Dataset
 
-| Column     | Description                          |
-|------------|--------------------------------------|
-| `review`   | Raw movie review text                |
-| `sentiment`| Label: `positive` or `negative`      |
+| Column      | Description                     |
+|-------------|---------------------------------|
+| `review`    | Raw movie review text           |
+| `sentiment` | Label: `positive` or `negative` |
 
 - **Total rows:** 50,000 (20,000 used)
 - **Class balance:** 50% positive / 50% negative
@@ -65,8 +67,8 @@ sentiment-analysis/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/<your-username>/sentiment-analysis.git
-cd sentiment-analysis
+git clone https://github.com/diwandahiya304/Sentiment-Analysis.git
+cd Sentiment-Analysis
 ```
 
 ### 2. Create a virtual environment
@@ -97,16 +99,9 @@ data/IMDB Dataset.csv
 jupyter notebook notebooks/sentiment_analysis.ipynb
 ```
 
-### Option B — Run scripts individually
+### Option B — Full training pipeline
 ```bash
-# Step 1: Preprocess
-python src/preprocess.py
-
-# Step 2: Train
 python src/train.py
-
-# Step 3: Evaluate
-python src/evaluate.py
 ```
 
 ### Option C — Predict on new text
@@ -142,32 +137,48 @@ src/train.py  ──  Naive Bayes Classifier
   └─ Save model → models/nb_model.joblib
   │
   ▼
-src/evaluate.py  ──  Metrics
+src/evaluate.py  ──  Metrics & Visualizations
   ├─ Accuracy, F1, Precision, Recall
-  ├─ Confusion matrix → outputs/
-  └─ Top TF-IDF features → outputs/
+  ├─ Confusion matrix → outputs/confusion_matrix.png
+  └─ Top TF-IDF features → outputs/top_features.png
 ```
 
 ---
 
 ## 📈 Results
 
-| Metric    | Score  |
-|-----------|--------|
-| Accuracy  | ~0.86  |
-| F1 Score  | ~0.86  |
-| Precision | ~0.86  |
-| Recall    | ~0.86  |
+| Metric    | Score |
+|-----------|-------|
+| Accuracy  | 0.86  |
+| F1 Score  | 0.86  |
+| Precision | 0.86  |
+| Recall    | 0.86  |
+
+---
+
+## 🔍 Live Inference Demo
+
+Run predictions on any custom review text directly from the terminal:
+
+```bash
+python src/train.py --predict "This movie was absolutely brilliant!"
+python src/train.py --predict "Worst film I have ever seen. Complete waste of time."
+```
+
+![Inference Demo](outputs/inference_demo.png)
+
+> **Positive review** detected with **89.7% confidence**  
+> **Negative review** detected with **99.3% confidence**
 
 ---
 
 ## 🔑 Key Features
 
 - **spaCy NLP pipeline** — efficient tokenization, lemmatization, and stopword removal on 20,000+ reviews
-- **Advanced text cleaning** — strips HTML tags, URLs, special characters to reduce noise
-- **TF-IDF vectorization** — extracts contextual unigram + bigram features (20k vocab)
-- **80/20 stratified split** — ensures balanced class distribution in train and test sets
-- **Naive Bayes classifier** — fast, interpretable, and effective for text classification
+- **Advanced text cleaning** — strips HTML tags, URLs, and special characters to reduce noise
+- **TF-IDF vectorization** — extracts contextual unigram + bigram features (20k vocab, `sublinear_tf`)
+- **80/20 stratified split** — ensures balanced class distribution across train and test sets
+- **Naive Bayes classifier** — fast, interpretable, and scalable sentiment classification with scikit-learn
 
 ---
 
